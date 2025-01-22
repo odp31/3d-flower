@@ -1,27 +1,38 @@
-import bpy
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+import numpy as np 
 
-# clear default cube
-bpy.ops.object.select_all(action='SELECT')
-bpy.ops.object.delete(use_global=False)
+def petal(t, r, R):
+  """
+  Calculates x, y, z coordinates of a petal
+  """
+  x = (R + r * np.cos(5 * t)) * np.cos(t)
+  y = (R + r * np.cos(5 * t)) * np.sin(t)
+  z = r * np.sin(5 * t)
+  return x, y, z
 
-# create new mesh
-mesh = bpy.data.meshes.new("FlowerMesh")
+# parameters
+num_petals = 5
+r = 0.5
+R = 1.5
 
-# define vertices (ex: simple 4 petal flower)
-vertices = [
-  (0, 0, 0), 
-  (1, 0, 0),
-  (0.5, 0.866, 0),
-  (-0.5, 0.866, 0),
-  (-1, 0, 0),
-]
+# create figure and 3D axes
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
 
-# define faces (connecting vertices to form petals)
-faces = [
-  (0, 1, 2),
-  (0, 2, 3),
-  (0, 3, 4),
-  (0, 4, 1),
-]
+# generate data for each petal
+for i in range(num_petals):
+  t = np.linspace(0, 2 * np.pi, 100) + 2 * np.pi * i / num_petals
+  x, y, z = petal(t, r, R)
+  ax.plot(x, y, z, color = 'red')
 
-# create
+# customize plot
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+ax.set_title('3d flower')
+ax.view_init(elev=30, azim=45)
+
+# show plot
+plt.show()
+
